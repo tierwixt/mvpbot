@@ -1,6 +1,9 @@
 // npm packages
 var builder   = require('botbuilder')
-var restify   = require('restify')
+var restify   = require('restify') 
+
+// file dependencies
+var cateringDialog = require('./dialogs/catering')
 
 // bot setup
 var connector = new builder.ChatConnector()
@@ -17,6 +20,9 @@ server.post('/api/messages', connector.listen())
 var luisEndpoint ='https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/d13236ab-30ec-4434-b2ff-5980593fcff2?subscription-key=511b5f5824ca4a2782e7956cb66883a0&verbose=true&q='
 var recognizer = new builder.LuisRecognizer(luisEndpoint)
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
+
+// load module 
+cateringDialog(bot)
 
 // dialogs
 bot.dialog('/', intents)
@@ -42,9 +48,7 @@ bot.dialog('/', intents)
         }
     ])
 
-
 //Helper functions
-
 const extractEntities = (session, response) => {
     var foundEntities =[]
 
