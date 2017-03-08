@@ -2,6 +2,10 @@
 var builder   = require('botbuilder')
 var restify   = require('restify')
 
+// adding dialog files
+const greetingDialog = require('./dialogs/greeting')
+const noneDialog = require('./dialogs/none')
+
 // bot setup
 var connector = new builder.ChatConnector()
 var bot       = new builder.UniversalBot(connector)
@@ -18,29 +22,26 @@ var luisEndpoint ='https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/d13
 var recognizer = new builder.LuisRecognizer(luisEndpoint)
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 
+// loading dialogs
+greetingDialog(bot)
+noneDialog(bot)
+
 // dialogs
-bot.dialog('/', intents)
-    .matches('Greeting' , [
-    session => {
-        session.send('Hey you!')
-        }   
-    ])
-    .matches('MenuInquiry', [
-        (session, response) => {
-            var entities = extractEntities(session, response)
-
-            entities.forEach( e => {
-                session.send('I found an entity: ' + e.entity)
-            })
-
-            session.send('You want to know about the menu')
+bot.dialog('/', intents) 
+    // this "Greeting" below is from our Luis intent. Naming has to match intent capitalization and spelling
+    .matches('Greeting', [
+        function(session, response) {
+            session.beginDialog('/greeting', response)
         }
     ])
     .matches('None', [
-        session => {
-            session.send('I do not undertand.')
+        function(session, response) {
+            session.beginDialog('/none', response)
         }
     ])
+
+    
+    
 
 
 //Helper functions
