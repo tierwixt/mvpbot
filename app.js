@@ -2,7 +2,8 @@
 var builder   = require('botbuilder')
 var restify   = require('restify')
 
-// adding dialog files
+//File Dependencies
+const cfpDialog = require('./dialogs/cfp')
 const noneDialog = require('./dialogs/none')
 
 // bot setup
@@ -25,6 +26,7 @@ var recognizer = new builder.LuisRecognizer(luisEndpoint)
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 
 // loading dialogs
+cfpDialog(bot)
 noneDialog(bot)
 
 // dialogs
