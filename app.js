@@ -2,6 +2,9 @@
 var builder   = require('botbuilder')
 var restify   = require('restify')
 
+//File Dependencies
+var cfpDialog = require('./dialogs/cfp')
+
 // bot setup
 var connector = new builder.ChatConnector()
 var bot       = new builder.UniversalBot(connector)
@@ -18,8 +21,11 @@ var luisEndpoint ='https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/d13
 var recognizer = new builder.LuisRecognizer(luisEndpoint)
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 
+//Load Modules
+cfpDialog(bot)
+
 // dialogs
-bot.dialog('/', intents)
+ bot.dialog('/', intents)
     .matches('Greeting' , [
     session => {
         session.send('Hey you!')
