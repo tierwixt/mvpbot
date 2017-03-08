@@ -38,15 +38,15 @@ bot.dialog('/', intents)
         function (session, response) {
             if (response.response.index == 0) {
                 session.send('You want to hear about speaking opportunities, let\'s see what is happening in your region.')
-                
+                // call CFP dialog
             }
             else if (response.response.index == 1) {
                 session.send('You want to hear about catering. Pizza anyone?')
-
+                // call dominos offer dialog
             }
             else {
                 session.send('You have questions around the MVP program. What can I answer for you today?')
-
+                // call QnA maker
             }
         }
     ])
