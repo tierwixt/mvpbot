@@ -9,10 +9,11 @@ module.exports = function (bot) {
         },  
         (session, response) => {
             if (response.response) {
-                session.send('Glad to hear! Sounds like a pretty cool event. Go to https://aka.ms/USDXcatering to request Domino\'s catering. Fill it out and follow the instructions to request.')
+                session.send('Glad to hear! Sounds like a pretty cool event. Go to https://aka.ms/USDXcatering to request Domino\'s catering. Fill it out and follow the instructions to request. Anything else?')
             } else {
-                session.send('Unfortunately, you\'re event is not eligible for the catering offer. Please reach out to your local Community Evangelist with further questions.')
+                session.send('Unfortunately, you\'re event is not eligible for the catering offer. Please reach out to your local Community Evangelist with further questions. Can I help you with anything else?')
             }
+            session.endDialog();
         }       
     ])
  }

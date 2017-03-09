@@ -37,22 +37,26 @@ bot.dialog('/', intents)
     .matches('Greeting', [
         (session, response) => {
             session.send('Hi! MVP Bot here, at your service!😏')
-            builder.Prompts.choice(session,'Here are some of the ways I can help you today, please select from the list below:', menulist)
+            builder.Prompts.choice(session,'What can I do for you today? Some of the ways I can help are listed below. Please select from the following options:', menulist)
         }, 
         (session, response) => {        
             if (response.response.index == 0) {
-                session.replaceDialog('/cfp')
+                session.beginDialog('/cfp')
+              
             }
             else if (response.response.index == 1) {
                 session.beginDialog('/catering')
+               
             }
             else {
                 // we need to change this message later
-                session.send('You have questions around the MVP program. What can I answer for you today?')
+                session.send('You have questions about the MVP program. What can I answer for you today?')
                 // QnA maker 
             }
         }
     ])
+
+// matches responses with the intents that we trained in Luis
     .matches('CFP', [
         function(session, response) {
             session.beginDialog('/cfp', response)
