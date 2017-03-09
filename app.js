@@ -1,6 +1,9 @@
 // npm packages
 var builder   = require('botbuilder')
-var restify   = require('restify')
+var restify   = require('restify') 
+
+// file dependencies
+var cateringDialog = require('./dialogs/catering')
 
 //File Dependencies
 const cfpDialog = require('./dialogs/cfp')
@@ -25,9 +28,29 @@ var luisEndpoint ='https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/d13
 var recognizer = new builder.LuisRecognizer(luisEndpoint)
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 
+<<<<<<< HEAD
 // loading dialogs
 cfpDialog(bot)
 noneDialog(bot)
+=======
+// load module 
+cateringDialog(bot)
+
+// dialogs
+bot.dialog('/', intents)
+    .matches('Greeting' , [
+    session => {
+        session.send('Hey you!')
+        }   
+    ])
+    .matches('MenuInquiry', [
+        (session, response) => {
+            var entities = extractEntities(session, response)
+
+            entities.forEach( e => {
+                session.send('I found an entity: ' + e.entity)
+            })
+>>>>>>> cateringDialog
 
 // dialogs
 bot.dialog('/', intents) 
@@ -58,4 +81,25 @@ bot.dialog('/', intents)
         }
     ])
 
+<<<<<<< HEAD
     
+=======
+//Helper functions
+const extractEntities = (session, response) => {
+    var foundEntities =[]
+
+    var foodtype = builder.EntityRecognizer.findEntity(response.entities, 'FoodType')
+    var money = builder.EntityRecognizer.findEntity(response.entities, 'builtin.money')
+
+    if (foodtype) {
+        session.userData.foodtype = foodtype
+        foundEntities.push(foodtype)
+    }
+    if (money) {
+        session.userData.money = money
+        foundEntities.push(money)
+    }
+
+    return foundEntities
+}
+>>>>>>> cateringDialog
