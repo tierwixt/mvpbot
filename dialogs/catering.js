@@ -1,4 +1,4 @@
-var builder = require('botbuilder')
+const builder = require('botbuilder')
 
 module.exports = function (bot) {
     bot.dialog('/catering', [
