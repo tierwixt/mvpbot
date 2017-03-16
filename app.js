@@ -35,8 +35,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 
 // var BasicQnAMakerDialog = new cognitiveservices.QnAMakerDialog({
 //   recognizers: [recognizer2],
-//   defaultMessage: 'No good match in FAQ.',
-//   qnaThreshold: 0.5})
+//   defaultMessage: 'No good match in FAQ.',//   qnaThreshold: 0.5})
 
 // // dialogs
 // bot.dialog('/', BasicQnAMakerDialog)
@@ -83,19 +82,3 @@ bot.dialog('/', intents)
           session.beginDialog('/none', response)
         }
     ])
-
-// npm packages
-var builder = require('botbuilder')
-var restify = require('restify')
-var cognitiveservices = require('botbuilder-cognitiveservices')
-
-// bot setup
-var connector = new builder.ChatConnector()
-var bot = new builder.UniversalBot(connector)
-
-// bot setup for restify server
-var server = restify.createServer()
-server.listen(3978, function () {
-  console.log('test bot endpoint at http://localhost:3978/api/messages')
-})
-server.post('/api/messages', connector.listen())
