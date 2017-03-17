@@ -1,6 +1,9 @@
 // npm packages
 const builder   = require('botbuilder')
 const restify   = require('restify') 
+const cogserv   = require('botbuilder-cognitiveservices')
+const request   = require('request')
+const querystring = require('querystring')
 
 // file Dependencies
 const cfpDialog = require('./dialogs/cfp')
@@ -26,12 +29,25 @@ var luisEndpoint ='https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/d13
 var recognizer = new builder.LuisRecognizer(luisEndpoint)
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 
+// // QnA Setup
+// var qnaRecognizer = new cogserv.QnAMakerRecognizer({
+//     knowledgeBaseId: 'f2fd70fa-0c3e-4e0d-abd1-95d19811212b',
+//     subscriptionKey: '61a22ce5b7c041939330fcc9496f64d6'
+// })
+// var qnaDialog = new cogserv.QnAMakerDialog({
+//     recognizers: [qnaRecognizer]
+//     // defaultMessage: 'Ask me another question about the MVP program.',
+//     // qnaThreshold: 0.5 
+// })
+
 // loading dialogs
 cfpDialog(bot)
 cateringDialog(bot)
 noneDialog(bot)
 
-// dialogs
+// // dialogs
+// bot.dialog('/QnA', qnaDialog)
+
 bot.dialog('/', intents) 
     // this "Greeting" below is from our Luis intent. Naming has to match intent capitalization and spelling
     .matches('Greeting', [
@@ -42,17 +58,32 @@ bot.dialog('/', intents)
         (session, response) => {        
             if (response.response.index == 0) {
                 session.beginDialog('/cfp')
-              
             }
             else if (response.response.index == 1) {
                 session.beginDialog('/catering')
-               
             }
             else {
-                // we need to change this message later
-                session.send('You have questions about the MVP program. What can I answer for you today?')
-                // QnA maker 
+                builder.Prompts.text(session,'You have questions about the MVP program. What can I answer for you today?')
             }
+        },
+        (session, response) => {
+            // QnA maker 
+            // To do: add while loop, move qna to a new dialog file
+            qna(response.response, (err, result) =>     {
+
+                if (err) {
+                    console.error(err)
+                    session.send('Unfortunately an error occurred. Try again.')
+                } else {
+                    // The QnA returns a JSON: { answer:XXXX, score: XXXX: }
+                    // where score is a confidence the answer matches the question.
+                    // Advanced implementations might log lower scored questions and
+                    // answers since they tend to indicate either gaps in the FAQ content
+                    // or a model that needs training
+                    session.send(JSON.parse(result).answer)
+                }
+            // session.endDialog()
+            })
         }
     ])
 
@@ -72,3 +103,21 @@ bot.dialog('/', intents)
             session.beginDialog('/none', response)
         }
     ])
+
+// Helper functions
+const qna = (q, cb) => {
+  // Here's where we pass anything the user typed along to the QnA service.
+    q = querystring.escape(q)
+    request('http://qnaservice.cloudapp.net/KBService.svc/GetAnswer?kbId=f2fd70fa-0c3e-4e0d-abd1-95d19811212b&question=' + q, function (error, response, body) {
+        if (error) {
+            cb(error, null)
+        } else if (response.statusCode !== 200) {
+            // Valid response from QnA but it's an error
+            // return the response for further processing
+            cb(response, null)
+        } else {
+            // All looks OK, the answer is in the body
+            cb(null, body)
+        }
+    })
+}
