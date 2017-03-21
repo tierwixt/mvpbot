@@ -20,10 +20,15 @@ const menulist = ['Speaking Opportunities', 'Catering', 'General MVP Questions']
 
 // bot setup for restify server
 const server = restify.createServer()
-server.listen(process.env.PORT, function () {
-  console.log('test bot endpoint at http://localhost:3978/api/messages')
-})
+
 server.post('/api/messages', connector.listen())
+
+// static website
+server.get('/', restify.serveStatic({
+  directory: './public',
+  file: 'index.html'
+}));
+
 
 // Luis Setup
 var luisEndpoint = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/d13236ab-30ec-4434-b2ff-5980593fcff2?subscription-key=511b5f5824ca4a2782e7956cb66883a0&verbose=true&q='
@@ -72,3 +77,7 @@ bot.dialog('/', intents)
         session.beginDialog('/none', response)
       }
     ])
+
+server.listen(process.env.PORT || 3978, function () {
+  console.log('test bot endpoint at http://localhost:3978/api/messages')
+})
