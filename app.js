@@ -20,7 +20,7 @@ const menulist = ['Speaking Opportunities', 'Catering', 'General MVP Questions']
 
 // bot setup for restify server
 const server = restify.createServer()
-server.listen(3978, function () {
+server.listen(process.env.PORT, function () {
   console.log('test bot endpoint at http://localhost:3978/api/messages')
 })
 server.post('/api/messages', connector.listen())
