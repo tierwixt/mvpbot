@@ -9,7 +9,10 @@ const cateringDialog = require('./dialogs/catering')
 const qnaDialog = require('./dialogs/qna')
 
 // bot setup
-const connector = new builder.ChatConnector()
+const connector = new builder.ChatConnector({
+  appId: '82bf04ba-645a-4af3-a3f2-5436c8a74c6c', 
+  appPassword: 'hhhXBjjXgAvEULmXq3YOXvz'
+})
 const bot = new builder.UniversalBot(connector)
 
 // main menu choices
@@ -33,8 +36,7 @@ cateringDialog(bot)
 noneDialog(bot)
 qnaDialog(bot)
 
-// // dialogs
-// bot.dialog('/QnA', qnaDialog)
+// dialogs
 
 bot.dialog('/', intents)
     // this "Greeting" below is from our Luis intent. Naming has to match intent capitalization and spelling
